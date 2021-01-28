@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop.xsd
+	http://www.springframework.org/schema/tx 
+	http://www.springframework.org/schema/tx/spring-tx.xsd">
+	
+	<bean id="studentService" class="com.zyy.service.impl.StudentServiceImpl"></bean>
+	<bean id="aspect" class="com.zyy.aspect.MyAspect"></bean>
+	<aop:config>
+		<aop:aspect ref="aspect">
+		<!-- 两种方式
+			1 直接写 通知和切入点一起写
+				<aop:before method="startLog" pointcut=“execution(* *..*.*ServiceImpl.add*())”/>
+			2 分成两步写 切入点先写好 再写通知
+				<aop:pointcut expression="execution(* *..*.*ServiceImpl.add*())" id="point"/>
+				<aop:before method="startLog" pointcut-ref="point"/>
+		 -->
+			<aop:pointcut expression="execution(* *..*.*ServiceImpl.add*())" id="point"/>
+			<!-- 前置通知
+			<aop:before method="startLog" pointcut-ref="point"/> -->
+			<!-- 后置通知 遇到异常就不通知
+			<aop:after-returning method="endLog" pointcut-ref="point"/> -->
+			<!-- 最终通知 遇到异常也会执行 
+			<aop:after method="endLog" pointcut-ref="point"/>-->
+			<!-- 环绕通知 需要在aspect类里面写一个用于环绕通知的方法 -->
+			<aop:around method="login" pointcut-ref="point"/>
+		</aop:aspect>
+	</aop:config>
+
+</beans>
