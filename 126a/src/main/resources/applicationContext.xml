@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop.xsd
+	http://www.springframework.org/schema/tx 
+	http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<bean id="studentService"  scope="singleton" class="com.zyy.service.impl.StudentServiceImpl">
+	<!-- scope是bean的作用范围
+			singleton 单例
+				prototype 多例
+	 -->
+		<property name="studentDao" ref="studentDao" />
+		<!-- 后面的ref是指向子类对象的 将他赋值给StudentDao对象 -->
+		<property name="user" value="jinri"></property>
+		<!-- 
+			name就是叫这个名字的数据
+			spring里 认为string也是基本类型的数据
+			所以value可以给他赋值
+			但是引用数据类型就要使用ref才能赋值
+			
+			要记住在这个数据初始化的地方，要创建getset方法才能使用
+		 -->
+	</bean>
+	<bean id="studentDao" class="com.zyy.dao.impl.StudentDaoImpl">
+	</bean>
+	
+
+</beans>
