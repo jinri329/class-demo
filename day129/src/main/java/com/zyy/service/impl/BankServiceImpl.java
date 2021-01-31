@@ -13,9 +13,9 @@ import com.zyy.service.BankService;
  * 事务管理的注解 可以加在类上和方法上
  * 加在类上就是这个类里面的方法都遵循这个规则
  * 方法上就只有他遵循
- *
+ *@Transactional(isolation=Isolation.DEFAULT)
  */
-@Transactional(isolation=Isolation.DEFAULT)
+
 @Service
 public class BankServiceImpl implements BankService {
 	@Autowired
