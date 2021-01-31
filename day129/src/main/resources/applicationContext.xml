@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop.xsd
+	http://www.springframework.org/schema/tx 
+	http://www.springframework.org/schema/tx/spring-tx.xsd">
+	
+	<context:component-scan base-package="com.zyy"></context:component-scan>
+
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<!-- 这里面设置的数据库连接的基本信息 name就是给哪个赋值 value就是值 -->
+		<property name="driverClassName"
+			value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost/set" />
+		<property name="username" value="root" />
+		<property name="password" value="root" />
+	</bean>
+
+	<bean id="jdbcTemplate"
+		class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+
+	<!-- 通过spring 的声明式事务管理来配置事务的隔离级别和传播行为 
+	
+	1 spring容器里要有一个事务管理对象 -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<!-- 需要加载数据库连接池  -->
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	<!-- 2 配置service类里面的哪个方法遵循哪个隔离级别和传播行为 -->
+	<tx:advice id="transactionAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+		<!-- service 类里面的哪个方法遵循哪个隔离级别和传播行为 
+			这里的规则一般来说 新手写不到，就使用默认值
+		-->
+			<tx:method name="transfer" isolation="DEFAULT" propagation="REQUIRED"/>
+		</tx:attributes>
+	</tx:advice>
+	<!-- 3 配置一个切面类 告诉我们的事务管理器 这个规则作用在哪个范围内-->
+	<aop:config>
+		<aop:advisor pointcut="execution(* *..*.*ServiceImpl.transfer(..))" advice-ref="transactionAdvice"/>
+	</aop:config>
+</beans>
